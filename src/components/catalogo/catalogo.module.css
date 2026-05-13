@@ -1,0 +1,210 @@
+
+.secao_catalogo {
+    background-color: #221c2d;
+    padding: 80px 0;
+    width: 100%;
+}
+
+.container_catalogo {
+    max-width: 1550px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+
+.cabecalho_catalogo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.titulo_secao {
+    font-family: var(--font-titulo);
+    color: #f5f5f5;
+    font-size: 2rem;
+    font-weight: 400;
+    margin: 0 0 10px 0;
+    text-transform: capitalize;
+}
+
+.linha_decorativa {
+    width: 120px;
+    height: 2px;
+    background-color: #FF004C;
+    box-shadow: 0 0 8px rgba(250, 16, 75, 0.5);
+}
+
+.barra_filtros {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 40px;
+    gap: 20px;
+}
+
+.input_pesquisa {
+    flex: 1;
+    background-color: #3b324d;
+    border: 1px solid #4a3c60;
+    border-radius: 4px;
+    padding: 12px 20px;
+    color: #d3d3d3;
+    font-family: var(--font-padrao);
+    font-size: 1rem;
+    outline: none;
+}
+
+.input_pesquisa::placeholder {
+    color: #9a90b3;
+}
+
+.filtros_botoes {
+    display: flex;
+    gap: 15px;
+}
+
+.btn_filtro {
+    background-color: #3b324d;
+    border: 1px solid #4a3c60;
+    border-radius: 4px;
+    padding: 10px 25px;
+    color: #d3d3d3;
+    font-family: var(--font-padrao);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn_filtro:hover {
+    background-color: #4a3c60;
+}
+
+.grid_jogos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 50px;
+}
+.card_jogo {
+    background-color: #231d2e; 
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.3), 
+        inset 0 0 5px rgba(255, 255, 255, 0.08);
+        
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card_jogo:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.3); 
+    
+
+}
+.imagem_jogo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.nome_jogo {
+    font-family: var(--font-titulo);
+    color: #f5f5f5;
+    font-size: 1.2rem;
+    font-weight: 300;
+    margin: 0 0 5px 0;
+    text-align: center;
+}
+
+.preco {
+    font-family: var(--font-titulo);
+    color: #ffffff;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.btn_detalhes {
+    background-color: #FF004C;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 30px;
+    font-family: var(--font-titulo);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn_detalhes:hover {
+    background-color: #FF004C;
+}
+
+.paginacao {
+    display: flex;
+    gap: 10px;
+}
+
+.btn_pag {
+    background-color: transparent;
+    border: 1px solid #FF004C;
+    color: #d3d3d3;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-padrao);
+    transition: all 0.3s ease;
+}
+
+.btn_pag:hover {
+    background-color: rgba(250, 16, 75, 0.15);
+    color: #ffffff;
+}
+
+.btn_pag.pag_ativo {
+    background-color: #FF004C;
+    color: #ffffff;
+    border-color: #FF004C;
+}
+
+@media (max-width: 900px) {
+    .grid_jogos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .barra_filtros {
+        flex-direction: column;
+    }
+    
+    .filtros_botoes {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btn_filtro {
+        flex: 1;
+    }
+
+    .grid_jogos {
+        grid-template-columns: 1fr;
+    }
+}
