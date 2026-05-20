@@ -1,14 +1,18 @@
 import React from 'react';
 import styles from './footer.module.css';
 
-const Footer = () => {
+const Footer = ({ transparente = false }: { transparente?: boolean }) => {
   return (
-    <footer className={styles.rodape}>
+    <footer 
+        className={styles.rodape}
+        /* Força o fundo transparente direto no HTML */
+        style={transparente ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}}
+    >
       <div className={styles.rodape__conteudo}>
         
         <div className={styles.rodape__logo}>
           <img 
-            src="../imgs/logo.png" 
+            src="/imgs/logo.png" /* Corrigido caminho da imagem */
             alt="Logo Royal Games" 
             className={styles.rodape__logoImagem}
           />

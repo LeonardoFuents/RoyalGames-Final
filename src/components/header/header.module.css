@@ -20,14 +20,14 @@
 #nav_menu a {
     text-decoration: none;
     color: #ffffff;
-    font-weight: 4  00;
+    font-weight: 4 00;
     font-size: 20px;
     transition: color 0.3s ease;
 }
 
 #nav_menu a:hover {
     color: var(--vermelho);
-    
+
 }
 
 #btn_login {
@@ -81,5 +81,9 @@
 
     #logo {
         height: 30px;
+    }
+
+    .fundo_transparente {
+        background: transparent !important;
     }
 }

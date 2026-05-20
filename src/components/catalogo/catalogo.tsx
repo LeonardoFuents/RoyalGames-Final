@@ -1,15 +1,49 @@
 import styles from "./catalogo.module.css";
-
-const jogosMock = [
-    { id: 1, nome: "Minecraft", precoAntigo: "R$70,00", imagem: "../imgs/minecraft.png" },
-    { id: 2, nome: "Call of Duty", precoAntigo: "R$70,00", imagem: "../imgs/codmobile.png" },
-    { id: 3, nome: "League of Legends", precoAntigo: "R$70,00", imagem: "../imgs/lol1.png" },
-    { id: 4, nome: "Valorant", precoAntigo: "R$70,00", imagem: "../imgs/valorant.png" },
-    { id: 5, nome: "Overcooked", precoAntigo: "R$70,00", imagem: "../imgs/overcooked.png" },
-    { id: 6, nome: "Stardew Valley", precoAntigo: "R$70,00", imagem: "../imgs/stardewvalley.png" },
-];
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getJogos, getImagemUrl, ListarJogo } from "@/src/pages/api/jogoService";
 
 const Catalogo = () => {
+    const [jogos, setJogos] = useState<ListarJogo[]>([]);
+    const [jogosFiltrados, setJogosFiltrados] = useState<ListarJogo[]>([]);
+    const [pesquisa, setPesquisa] = useState("");
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState("");
+    const router = useRouter();
+
+    useEffect(() => {
+        const carregarJogos = async () => {
+            try {
+                setCarregando(true);
+                const dados = await getJogos();
+                setJogos(dados);
+                setJogosFiltrados(dados);
+            } catch (e: any) {
+                setErro("Não foi possível carregar os jogos.");
+            } finally {
+                setCarregando(false);
+            }
+        };
+
+        carregarJogos();
+    }, []);
+
+    useEffect(() => {
+        const filtrado = jogos.filter(jogo =>
+            jogo.nome.toLowerCase().includes(pesquisa.toLowerCase())
+        );
+        setJogosFiltrados(filtrado);
+    }, [pesquisa, jogos]);
+
+    const handleDetalhes = (id: number) => {
+        router.push(`/detalhes-jogo?id=${id}`);
+    };
+
+    const ordenarMenorPreco = () => {
+        const ordenado = [...jogosFiltrados].sort((a, b) => a.preco - b.preco);
+        setJogosFiltrados(ordenado);
+    };
+
     return (
         <section className={styles.secao_catalogo}>
             <div className={styles.container_catalogo}>
@@ -23,33 +57,61 @@ const Catalogo = () => {
                     <input 
                         type="text" 
                         placeholder="Pesquise..." 
-                        className={styles.input_pesquisa} 
+                        className={styles.input_pesquisa}
+                        value={pesquisa}
+                        onChange={(e) => setPesquisa(e.target.value)}
                     />
                     <div className={styles.filtros_botoes}>
-                        <button className={`${styles.btn_filtro} ${styles.ativo}`}>Menor Preço</button>
-                        <button className={styles.btn_filtro}>Categoria</button>
+                        <button 
+                            className={`${styles.btn_filtro} ${styles.ativo}`}
+                            onClick={ordenarMenorPreco}
+                        >
+                            Menor Preço
+                        </button>
                     </div>
                 </div>
 
+                {carregando && (
+                    <p style={{ color: "var(--cor-texto-secundario)", textAlign: "center", padding: "2rem" }}>
+                        Carregando jogos...
+                    </p>
+                )}
+
+                {erro && (
+                    <p style={{ color: "red", textAlign: "center", padding: "2rem" }}>
+                        {erro}
+                    </p>
+                )}
+
+                {!carregando && !erro && jogosFiltrados.length === 0 && (
+                    <p style={{ color: "var(--cor-texto-secundario)", textAlign: "center", padding: "2rem" }}>
+                        Nenhum jogo encontrado.
+                    </p>
+                )}
+
                 <div className={styles.grid_jogos}>
-                    {jogosMock.map((jogo) => (
+                    {jogosFiltrados.map((jogo) => (
                         <div key={jogo.id} className={styles.card_jogo}>
-                            <img src={jogo.imagem} alt={`Capa do jogo ${jogo.nome}`} className={styles.imagem_jogo} />
+                            <img 
+                                src={getImagemUrl(jogo.id)} 
+                                alt={`Capa do jogo ${jogo.nome}`} 
+                                className={styles.imagem_jogo}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "../imgs/minecraft.png";
+                                }}
+                            />
                             <h3 className={styles.nome_jogo}>{jogo.nome}</h3>
-                            <span className={styles.preco}>{jogo.precoAntigo}</span>
-                            <button className={styles.btn_detalhes}>Detalhes</button>
+                            <span className={styles.preco}>
+                                R$ {jogo.preco.toFixed(2).replace(".", ",")}
+                            </span>
+                            <button 
+                                className={styles.btn_detalhes}
+                                onClick={() => handleDetalhes(jogo.id)}
+                            >
+                                Detalhes
+                            </button>
                         </div>
                     ))}
-                </div>
-
-                <div className={styles.paginacao}>
-                    <button className={styles.btn_pag}>&lt;</button>
-                    <button className={`${styles.btn_pag} ${styles.pag_ativo}`}>1</button>
-                    <button className={styles.btn_pag}>2</button>
-                    <button className={styles.btn_pag}>3</button>
-                    <button className={styles.btn_pag}>4</button>
-                    <button className={styles.btn_pag}>5</button>
-                    <button className={styles.btn_pag}>&gt;</button>
                 </div>
 
             </div>

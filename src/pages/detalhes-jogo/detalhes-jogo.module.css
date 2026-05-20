@@ -1,0 +1,144 @@
+.pagina_toda_gradient {
+    background: linear-gradient(to right, #2e2045 0%, #130e1a 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main_conteudo {
+    background: transparent; 
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.secao_detalhes {
+    width: 100%;
+    max-width: 1100px;
+}
+
+.caixa_detalhes {
+    background-color: rgba(35, 29, 46, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    border-radius: 8px;
+    padding: 60px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.cabecalho_detalhes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.titulo_secao {
+    font-family: var(--font-titulo);
+    color:var(--branco);
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0 0 10px 0;
+}
+
+.linha_decorativa {
+    width: 150px;
+    height: 2px;
+    background-color: var(--vermelho);
+    box-shadow: 0 0 8px rgba(250, 16, 75, 0.5);
+}
+
+.conteudo_superior {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.container_imagem {
+    display: flex;
+    justify-content: center;
+}
+
+.capa_jogo {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.textos_jogo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.titulo_jogo {
+    font-family: var(--font-titulo);
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+}
+
+.descricao {
+    font-family: var(--font-padrao);
+    color: #d3d3d3;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 300;
+    margin: 0 0 15px 0;
+}
+
+.metadados {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px 20px; 
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.item_meta {
+    display: flex;
+    gap: 10px;
+    justify-content: center; 
+    align-items: center;
+}
+
+.meta_label {
+    font-family: var(--font-titulo);
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.meta_valor {
+    font-family: var(--font-padrao);
+    color: #d3d3d3;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+@media (max-width: 900px) {
+    .caixa_detalhes {
+        padding: 40px 20px;
+    }
+
+    .conteudo_superior {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .metadados {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .item_meta {
+        justify-content: flex-start;
+    }
+}

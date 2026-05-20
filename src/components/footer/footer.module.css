@@ -50,4 +50,8 @@
     text-align: center;
     align-items: center;
   }
+
+  .fundo_transparente {
+    background: transparent !important;
+}
 }
