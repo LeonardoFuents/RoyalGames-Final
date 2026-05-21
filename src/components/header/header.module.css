@@ -25,10 +25,7 @@
     transition: color 0.3s ease;
 }
 
-#nav_menu a:hover {
-    color: var(--vermelho);
 
-}
 
 #btn_login {
     border: 1px solid var(--vermelho);

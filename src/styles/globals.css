@@ -26,3 +26,7 @@
 .layout_guide{
     width: 80%;
 }
+
+html {
+    scroll-behavior: smooth;
+}

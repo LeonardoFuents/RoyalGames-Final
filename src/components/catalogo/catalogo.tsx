@@ -2,6 +2,7 @@ import styles from "./catalogo.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getJogos, getImagemUrl, ListarJogo } from "@/src/pages/api/jogoService";
+import { getGeneros, Genero } from "@/src/pages/api/generoService";
 
 const Catalogo = () => {
     const [jogos, setJogos] = useState<ListarJogo[]>([]);
@@ -11,13 +12,21 @@ const Catalogo = () => {
     const [erro, setErro] = useState("");
     const router = useRouter();
 
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const JOGOS_POR_PAGINA = 6;
+    const [generos, setGeneros] = useState<Genero[]>([]);
+    const [generoSelecionado, setGeneroSelecionado] = useState<number | "">("");
+    const [ordemPreco, setOrdemPreco] = useState<"asc" | "desc" | null>(null);
+
     useEffect(() => {
-        const carregarJogos = async () => {
+        const carregarJogosEGeneros = async () => {
             try {
                 setCarregando(true);
-                const dados = await getJogos();
-                setJogos(dados);
-                setJogosFiltrados(dados);
+                const [dados, gs] = await Promise.all([getJogos(), getGeneros()]);
+                const ativos = dados.filter(j => j.statusProduto !== false);
+                setJogos(ativos);
+                setJogosFiltrados(ativos);
+                setGeneros(gs);
             } catch (e: any) {
                 setErro("Não foi possível carregar os jogos.");
             } finally {
@@ -25,27 +34,53 @@ const Catalogo = () => {
             }
         };
 
-        carregarJogos();
+        carregarJogosEGeneros();
     }, []);
 
     useEffect(() => {
-        const filtrado = jogos.filter(jogo =>
+        let filtrado = jogos.filter(jogo =>
             jogo.nome.toLowerCase().includes(pesquisa.toLowerCase())
         );
+        
+        if (generoSelecionado !== "") {
+            filtrado = filtrado.filter(jogo => 
+                jogo.generos && jogo.generos.some(g => g.id === generoSelecionado)
+            );
+        }
+
+        if (ordemPreco === "asc") {
+            filtrado = [...filtrado].sort((a, b) => a.preco - b.preco);
+        } else if (ordemPreco === "desc") {
+            filtrado = [...filtrado].sort((a, b) => b.preco - a.preco);
+        }
+
         setJogosFiltrados(filtrado);
-    }, [pesquisa, jogos]);
+        setPaginaAtual(1);
+    }, [pesquisa, jogos, generoSelecionado, ordemPreco]);
 
     const handleDetalhes = (id: number) => {
         router.push(`/detalhes-jogo?id=${id}`);
     };
 
-    const ordenarMenorPreco = () => {
-        const ordenado = [...jogosFiltrados].sort((a, b) => a.preco - b.preco);
-        setJogosFiltrados(ordenado);
+    const toggleOrdemPreco = () => {
+        if (ordemPreco === null || ordemPreco === "desc") {
+            setOrdemPreco("asc");
+        } else {
+            setOrdemPreco("desc");
+        }
+    };
+
+    const totalPaginas = Math.ceil(jogosFiltrados.length / JOGOS_POR_PAGINA);
+    const indiceInicio = (paginaAtual - 1) * JOGOS_POR_PAGINA;
+    const jogosDaPagina = jogosFiltrados.slice(indiceInicio, indiceInicio + JOGOS_POR_PAGINA);
+
+    const mudarPagina = (numero: number) => {
+        setPaginaAtual(numero);
+        document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
-        <section className={styles.secao_catalogo}>
+        <section id="catalogo" className={styles.secao_catalogo}>
             <div className={styles.container_catalogo}>
                 
                 <div className={styles.cabecalho_catalogo}>
@@ -63,11 +98,21 @@ const Catalogo = () => {
                     />
                     <div className={styles.filtros_botoes}>
                         <button 
-                            className={`${styles.btn_filtro} ${styles.ativo}`}
-                            onClick={ordenarMenorPreco}
+                            className={`${styles.btn_filtro} ${ordemPreco ? styles.ativo : ""}`}
+                            onClick={toggleOrdemPreco}
                         >
-                            Menor Preço
+                            {ordemPreco === "desc" ? "Maior Preço" : "Menor Preço"}
                         </button>
+                        <select 
+                            className={styles.select_categoria}
+                            value={generoSelecionado}
+                            onChange={(e) => setGeneroSelecionado(e.target.value ? Number(e.target.value) : "")}
+                        >
+                            <option value="">Todas as Categorias</option>
+                            {generos.map(g => (
+                                <option key={g.id} value={g.id}>{g.nome}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -90,7 +135,7 @@ const Catalogo = () => {
                 )}
 
                 <div className={styles.grid_jogos}>
-                    {jogosFiltrados.map((jogo) => (
+                    {jogosDaPagina.map((jogo) => (
                         <div key={jogo.id} className={styles.card_jogo}>
                             <img 
                                 src={getImagemUrl(jogo.id)} 
@@ -113,6 +158,36 @@ const Catalogo = () => {
                         </div>
                     ))}
                 </div>
+
+                {totalPaginas > 1 && (
+                    <div className={styles.paginacao}>
+                        <button 
+                            className={styles.btn_pag}
+                            disabled={paginaAtual === 1}
+                            onClick={() => mudarPagina(paginaAtual - 1)}
+                        >
+                            &lt;
+                        </button>
+
+                        {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
+                            <button 
+                                key={num}
+                                className={`${styles.btn_pag} ${paginaAtual === num ? styles.pag_ativo : ""}`}
+                                onClick={() => mudarPagina(num)}
+                            >
+                                {num}
+                            </button>
+                        ))}
+
+                        <button 
+                            className={styles.btn_pag}
+                            disabled={paginaAtual === totalPaginas}
+                            onClick={() => mudarPagina(paginaAtual + 1)}
+                        >
+                            &gt;
+                        </button>
+                    </div>
+                )}
 
             </div>
         </section>

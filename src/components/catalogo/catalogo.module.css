@@ -1,6 +1,6 @@
 
 .secao_catalogo {
-    background-color: #221c2d;
+    background-color: var(--cinza-escuro);
     padding: 80px 0;
     width: 100%;
 }
@@ -24,7 +24,7 @@
 
 .titulo_secao {
     font-family: var(--font-titulo);
-    color: #f5f5f5;
+    color: var(--branco);
     font-size: 2rem;
     font-weight: 400;
     margin: 0 0 10px 0;
@@ -34,7 +34,7 @@
 .linha_decorativa {
     width: 120px;
     height: 2px;
-    background-color: #FF004C;
+    background-color: var(--vermelho);
     box-shadow: 0 0 8px rgba(250, 16, 75, 0.5);
 }
 
@@ -53,7 +53,7 @@
     border: 1px solid #4a3c60;
     border-radius: 4px;
     padding: 12px 20px;
-    color: #d3d3d3;
+    color: var(--cinza-claro);
     font-family: var(--font-padrao);
     font-size: 1rem;
     outline: none;
@@ -73,13 +73,30 @@
     border: 1px solid #4a3c60;
     border-radius: 4px;
     padding: 10px 25px;
-    color: #d3d3d3;
+    color: var(--cinza-claro);
     font-family: var(--font-padrao);
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn_filtro:hover {
+    background-color: #4a3c60;
+}
+
+.select_categoria {
+    background-color: #3b324d;
+    border: 1px solid #4a3c60;
+    border-radius: 4px;
+    padding: 10px 20px;
+    color: var(--cinza-claro);
+    font-family: var(--font-padrao);
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select_categoria:hover {
     background-color: #4a3c60;
 }
 
@@ -92,7 +109,7 @@
     margin-bottom: 50px;
 }
 .card_jogo {
-    background-color: #231d2e; 
+    background-color: var(--cinza-escuro); 
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     padding: 20px;
@@ -122,7 +139,7 @@
 
 .nome_jogo {
     font-family: var(--font-titulo);
-    color: #f5f5f5;
+    color: var(--branco);
     font-size: 1.2rem;
     font-weight: 300;
     margin: 0 0 5px 0;
@@ -131,14 +148,14 @@
 
 .preco {
     font-family: var(--font-titulo);
-    color: #ffffff;
+    color: var(--branco);
     font-size: 0.9rem;
     margin-bottom: 15px;
 }
 
 .btn_detalhes {
-    background-color: #FF004C;
-    color: #ffffff;
+    background-color: var(--vermelho);
+    color: var(--branco);
     border: none;
     border-radius: 4px;
     padding: 8px 30px;
@@ -150,7 +167,7 @@
 }
 
 .btn_detalhes:hover {
-    background-color: #FF004C;
+    background-color: var(--vermelho);
 }
 
 .paginacao {
@@ -160,8 +177,8 @@
 
 .btn_pag {
     background-color: transparent;
-    border: 1px solid #FF004C;
-    color: #d3d3d3;
+    border: 1px solid var(--vermelho);
+    color: var(--cinza-claro);
     width: 35px;
     height: 35px;
     display: flex;
@@ -175,13 +192,13 @@
 
 .btn_pag:hover {
     background-color: rgba(250, 16, 75, 0.15);
-    color: #ffffff;
+    color: var(--branco);
 }
 
 .btn_pag.pag_ativo {
-    background-color: #FF004C;
-    color: #ffffff;
-    border-color: #FF004C;
+    background-color: var(--vermelho);
+    color: var(--branco);
+    border-color: var(--vermelho);
 }
 
 @media (max-width: 900px) {

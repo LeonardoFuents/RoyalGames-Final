@@ -168,7 +168,6 @@
     align-items: center;
 }
 
-/* Filtros */
 .barra_filtros {
     display: flex;
     justify-content: space-between;
@@ -306,6 +305,12 @@
 .btn_pag:hover {
     background-color: rgba(250, 16, 75, 0.15);
     color: #ffffff;
+}
+
+.btn_pag.pag_ativo {
+    background-color: #FA104B;
+    color: #ffffff;
+    border-color: #FA104B;
 }
 
 @media (max-width: 900px) {

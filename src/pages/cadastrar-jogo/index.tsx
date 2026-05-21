@@ -2,7 +2,7 @@ import Header from "@/src/components/header/header";
 import styles from "./cadastrar-jogo.module.css";
 import Footer from "@/src/components/footer/footer";
 import { useEffect, useState } from "react";
-import { getJogos, cadastrarJogo, atualizarJogo, deletarJogo, getImagemUrl, ListarJogo } from "@/src/pages/api/jogoService";
+import { getJogos, cadastrarJogo, atualizarJogo, deletarJogo, ativarJogo, getImagemUrl, ListarJogo } from "@/src/pages/api/jogoService";
 import { getGeneros, Genero } from "@/src/pages/api/generoService";
 import { getPlataformas, Plataforma } from "@/src/pages/api/plataformaService";
 import { getClassificacoes, ClassificacaoIndicativa } from "@/src/pages/api/classificacaoService";
@@ -22,10 +22,11 @@ const CadastrarJogo = () => {
     const [generos, setGeneros] = useState<Genero[]>([]);
     const [plataformas, setPlataformas] = useState<Plataforma[]>([]);
     const [classificacoes, setClassificacoes] = useState<ClassificacaoIndicativa[]>([]);
-    // Lista de jogos
     const [jogos, setJogos] = useState<ListarJogo[]>([]);
     const [pesquisa, setPesquisa] = useState("");
     const [carregandoJogos, setCarregandoJogos] = useState(true);
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const JOGOS_POR_PAGINA = 6;
     useEffect(() => {
         const carregarDados = async () => {
             try {
@@ -105,9 +106,33 @@ const CadastrarJogo = () => {
             erro(e.message || "Erro ao excluir jogo.");
         }
     };
+
+    const handleAtivar = async (id: number, nomeJogo: string) => {
+        try {
+            await ativarJogo(id);
+            notificacao(`Jogo "${nomeJogo}" ativado com sucesso!`);
+            await carregarJogos();
+        } catch (e: any) {
+            erro(e.message || "Erro ao ativar jogo.");
+        }
+    };
+    useEffect(() => {
+        setPaginaAtual(1);
+    }, [pesquisa, jogos]);
+
     const jogosFiltrados = jogos.filter(j =>
         j.nome.toLowerCase().includes(pesquisa.toLowerCase())
     );
+
+    const totalPaginas = Math.ceil(jogosFiltrados.length / JOGOS_POR_PAGINA);
+    const indiceInicio = (paginaAtual - 1) * JOGOS_POR_PAGINA;
+    const jogosDaPagina = jogosFiltrados.slice(indiceInicio, indiceInicio + JOGOS_POR_PAGINA);
+
+    const mudarPagina = (numero: number) => {
+        setPaginaAtual(numero);
+        document.getElementById("lista-jogos")?.scrollIntoView({ behavior: "smooth" });
+    };
+
     return (
         <div className={styles.pagina_toda_gradient}>
             <Header transparente={true} />
@@ -124,7 +149,6 @@ const CadastrarJogo = () => {
                         <form className={styles.formulario} onSubmit={handleSubmit}>
                             <div className={styles.grid_formulario}>
                                 
-                                {/* Coluna Esquerda */}
                                 <div className={styles.coluna_esquerda}>
                                     <div className={styles.grupo_input}>
                                         <label>Nome</label>
@@ -223,7 +247,7 @@ const CadastrarJogo = () => {
                         </form>
                     </div>
                 </section>
-                <section className={styles.secao_lista}>
+                <section id="lista-jogos" className={styles.secao_lista}>
                     <div className={styles.cabecalho_secao}>
                         <h2 className={styles.titulo_secao}>Lista de jogos</h2>
                         <div className={styles.linha_decorativa}></div>
@@ -243,8 +267,8 @@ const CadastrarJogo = () => {
                         </p>
                     )}
                     <div className={styles.grid_jogos}>
-                        {jogosFiltrados.map((jogo, index) => (
-                            <div key={jogo.id ?? index} className={styles.card_jogo}>
+                        {jogosDaPagina.map((jogo, index) => (
+                            <div key={jogo.id ?? index} className={styles.card_jogo} style={{ opacity: jogo.statusProduto !== false ? 1 : 0.4 }}>
                                 <img 
                                     src={getImagemUrl(jogo.id)} 
                                     alt={jogo.nome} 
@@ -254,17 +278,28 @@ const CadastrarJogo = () => {
                                     }}
                                 />
                                 <h3 className={styles.nome_jogo}>{jogo.nome}</h3>
+                                {jogo.statusProduto === false && <span style={{ color: "red", fontSize: "0.8rem", fontWeight: "bold" }}>(Desativado)</span>}
                                 <span className={styles.preco_riscado}>
                                     R$ {jogo.preco.toFixed(2).replace(".", ",")}
                                 </span>
                                 
                                 <div className={styles.botoes_card}>
-                                    <button 
-                                        className={styles.btn_excluir}
-                                        onClick={() => handleDeletar(jogo.id, jogo.nome)}
-                                    >
-                                        Excluir
-                                    </button>
+                                    {jogo.statusProduto !== false ? (
+                                        <button 
+                                            className={styles.btn_excluir}
+                                            onClick={() => handleDeletar(jogo.id, jogo.nome)}
+                                        >
+                                            Excluir
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            className={styles.btn_editar}
+                                            style={{ backgroundColor: "green" }}
+                                            onClick={() => handleAtivar(jogo.id, jogo.nome)}
+                                        >
+                                            Ativar
+                                        </button>
+                                    )}
                                     <button 
                                         className={styles.btn_editar}
                                         onClick={() => {
@@ -285,6 +320,36 @@ const CadastrarJogo = () => {
                             </div>
                         ))}
                     </div>
+
+                    {totalPaginas > 1 && (
+                        <div className={styles.paginacao}>
+                            <button 
+                                className={styles.btn_pag}
+                                disabled={paginaAtual === 1}
+                                onClick={() => mudarPagina(paginaAtual - 1)}
+                            >
+                                &lt;
+                            </button>
+
+                            {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(num => (
+                                <button 
+                                    key={num}
+                                    className={`${styles.btn_pag} ${paginaAtual === num ? styles.pag_ativo : ""}`}
+                                    onClick={() => mudarPagina(num)}
+                                >
+                                    {num}
+                                </button>
+                            ))}
+
+                            <button 
+                                className={styles.btn_pag}
+                                disabled={paginaAtual === totalPaginas}
+                                onClick={() => mudarPagina(paginaAtual + 1)}
+                            >
+                                &gt;
+                            </button>
+                        </div>
+                    )}
                 </section>
             </main>
             <Footer transparente={true} />

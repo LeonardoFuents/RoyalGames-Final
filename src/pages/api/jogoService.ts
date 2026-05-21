@@ -17,6 +17,7 @@ export type ListarJogo = {
     preco: number;
     descricao: string;
     imagemUrl: string | null;
+    statusProduto: boolean;
     generos: { id: number; nome: string }[];
     plataformas: { id: number; nome: string }[];
     classificacaoIndicativa: { id: number; nome: string } | null;
@@ -98,6 +99,14 @@ export async function atualizarJogo(id: number, dados: Partial<Jogo>) {
 export async function deletarJogo(id: number) {
     try {
         await api.delete(`/Jogo/${id}`);
+    } catch (e: any) {
+        throw new Error(e.message);
+    }
+}
+
+export async function ativarJogo(id: number) {
+    try {
+        await api.patch(`/Jogo/ativar/${id}`);
     } catch (e: any) {
         throw new Error(e.message);
     }

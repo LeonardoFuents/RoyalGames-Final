@@ -5,14 +5,13 @@ const Footer = ({ transparente = false }: { transparente?: boolean }) => {
   return (
     <footer 
         className={styles.rodape}
-        /* Força o fundo transparente direto no HTML */
-        style={transparente ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}}
+        style={transparente ? { background: 'transparent', borderTop: 'none', boxShadow: 'none' } : {}}
     >
       <div className={styles.rodape__conteudo}>
         
         <div className={styles.rodape__logo}>
           <img 
-            src="/imgs/logo.png" /* Corrigido caminho da imagem */
+            src="/imgs/logo.png"
             alt="Logo Royal Games" 
             className={styles.rodape__logoImagem}
           />

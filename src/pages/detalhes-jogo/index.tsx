@@ -20,6 +20,8 @@ const DetalhesJogo = () => {
             try {
                 setCarregando(true);
                 const dados = await getJogoById(Number(id));
+
+
                 setJogo(dados);
             } catch (e: any) {
                 setErro("Não foi possível carregar os detalhes do jogo.");
@@ -33,13 +35,13 @@ const DetalhesJogo = () => {
 
     return (
         <div className={styles.pagina_toda_gradient}>
-            
+
             <Header transparente={true} />
 
             <main className={styles.main_conteudo}>
                 <section className={styles.secao_detalhes}>
                     <div className={styles.caixa_detalhes}>
-                        
+
                         <div className={styles.cabecalho_detalhes}>
                             <h1 className={styles.titulo_secao}>Detalhes do jogo</h1>
                             <div className={styles.linha_decorativa}></div>
@@ -61,8 +63,8 @@ const DetalhesJogo = () => {
                             <>
                                 <div className={styles.conteudo_superior}>
                                     <div className={styles.container_imagem}>
-                                        <img 
-                                            src={getImagemUrl(jogo.id)} 
+                                        <img
+                                            src={getImagemUrl(jogo.id)}
                                             alt={`Capa do jogo ${jogo.nome}`}
                                             className={styles.capa_jogo}
                                             onError={(e) => {
@@ -70,7 +72,7 @@ const DetalhesJogo = () => {
                                             }}
                                         />
                                     </div>
-                                    
+
                                     <div className={styles.textos_jogo}>
                                         <h2 className={styles.titulo_jogo}>{jogo.nome}</h2>
                                         <p className={styles.descricao}>{jogo.descricao}</p>
@@ -109,9 +111,9 @@ const DetalhesJogo = () => {
                     </div>
                 </section>
             </main>
-            
+
             <Footer transparente={true} />
-            
+
         </div>
     )
 }

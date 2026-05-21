@@ -11,7 +11,6 @@ export async function Autenticar(email: string, senha: string) {
         const token = response.data.token;
         secureLocalStorage.setItem("token", token);
     } catch (error: any) {
-        // Repassa a mensagem real que veio da API (já tratada pelo interceptor)
         throw new Error(error?.message || "Email ou senha incorretos");
     }
 }

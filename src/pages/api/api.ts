@@ -17,7 +17,6 @@ api.interceptors.request.use((config) => {
     return config;
 })
 
-// Interceptor de resposta para expor mensagem real da API
 api.interceptors.response.use(
     (response) => response,
     (error) => {
