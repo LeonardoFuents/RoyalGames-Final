@@ -7,7 +7,11 @@ import { getGeneros, Genero } from "@/src/pages/api/generoService";
 import { getPlataformas, Plataforma } from "@/src/pages/api/plataformaService";
 import { getClassificacoes, ClassificacaoIndicativa } from "@/src/pages/api/classificacaoService";
 import { erro, notificacao } from "@/src/utils/toast";
+import secureLocalStorage from "react-secure-storage";
+import { useRouter } from "next/router";
+
 const CadastrarJogo = () => {
+    const router = useRouter();
     // Dados do formulário
     const [nome, setNome] = useState("");
     const [preco, setPreco] = useState("");
@@ -27,24 +31,35 @@ const CadastrarJogo = () => {
     const [carregandoJogos, setCarregandoJogos] = useState(true);
     const [paginaAtual, setPaginaAtual] = useState(1);
     const JOGOS_POR_PAGINA = 6;
+    
     useEffect(() => {
         const carregarDados = async () => {
+            const token = secureLocalStorage.getItem("token");
+            if (!token) {
+                router.push("/login");
+                return;
+            }
+
             try {
-                const [gs, ps, cs] = await Promise.all([
+                const [gs, ps, cs, jgs] = await Promise.all([
                     getGeneros(),
                     getPlataformas(),
                     getClassificacoes(),
+                    getJogos()
                 ]);
                 setGeneros(gs);
                 setPlataformas(ps);
                 setClassificacoes(cs);
+                setJogos(jgs);
             } catch {
                 erro("Erro ao carregar dados do formulário.");
+            } finally {
+                setCarregandoJogos(false);
             }
         };
         carregarDados();
-        carregarJogos();
-    }, []);
+    }, [router]);
+
     const carregarJogos = async () => {
         try {
             setCarregandoJogos(true);
